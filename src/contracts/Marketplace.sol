@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.5.0;
 
 contract Marketplace{
     string public name;
@@ -16,7 +16,7 @@ contract Marketplace{
         uint id,
         string name,
         uint price,
-        address owner,
+        address payable owner,
         bool purchased, 
     );
 
@@ -24,7 +24,7 @@ contract Marketplace{
         uint id,
         string name,
         uint price,
-        address owner,
+        address payable owner,
         bool purchased,
     );
 
