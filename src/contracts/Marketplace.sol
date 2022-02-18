@@ -17,7 +17,7 @@ contract Marketplace{
         string name,
         uint price,
         address payable owner,
-        bool purchased, 
+        bool purchased 
     );
 
     event ProductBought(
@@ -25,16 +25,16 @@ contract Marketplace{
         string name,
         uint price,
         address payable owner,
-        bool purchased,
+        bool purchased
     );
 
     mapping(uint => Product) public products;
 
-    function Marketplace() public {
+    constructor() public {
         name = "Blockchain Marketplace";
     }
 
-    function addProduct(string memory _name, uint memory _price) public {
+    function addProduct(string memory _name, uint _price) public {
         require(bytes(name).length > 0);
         require(_price > 0);
         productCount++;
@@ -43,9 +43,9 @@ contract Marketplace{
 
     }
 
-    function buyProduct(uint memory _id) public payable{
+    function buyProduct(uint _id) public payable{
 
-        Product memory _product = products[id];
+        Product memory _product = products[_id];
         address payable _seller = _product.owner;
 
         //condtitions
@@ -55,7 +55,7 @@ contract Marketplace{
 
         _product.owner = msg.sender;
         _product.purchased = true;
-        products[id]=_product;
+        products[_id]=_product;
         address(_seller).transfer(msg.value);
         emit ProductBought(productCount,_product.name,_product.price,msg.sender,false);
     }
