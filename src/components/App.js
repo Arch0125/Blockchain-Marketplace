@@ -2,24 +2,57 @@ import React, { Component } from 'react';
 import logo from '../logo.png';
 import Web3 from 'web3';
 import './App.css';
+import MarketPlace from '../abis/Marketplace.json'
 
 class App extends Component {
 
-  async loadWeb3(){
-    if(window.ethereum){
-      window.web3 = new Web3(window.ethereum);
+  async componentWillMount() {
+    await this.loadWeb3()
+    await this.loadBlockchainData()
+  }
+
+  async loadWeb3() {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
     }
-    else if(window.web3){
+    else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider)
     }
-    else{
-      window.alert('Non web3 browser detected! Use MetaMask extension')
+    else {
+      window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   }
 
+  async loadBlockchainData(){
+    const web3 = window.web3
+    const accounts = await web3.eth.getAccounts();
+    console.log(accounts)
+    this.setState({account : accounts[0]})
+    const networkId = await web3.eth.net.getId()
+    const networkData = MarketPlace.networks[networkId]
+    if(networkData){
+      const marketplace = await web3.eth.Contract(MarketPlace.abi, networkData.address)
+    }
+    else{
+      window.alert('Contract not deployed to the current network')
+    }
+    
+  }
 
+  constructor(props){
+    super(props)
+    this.state={
+      account:'',
+      productCount: 0,
+      product: [],
+      loading: true
+    }
+  }
+
+  
   render() {
+
     return (
       <div>
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -31,6 +64,9 @@ class App extends Component {
           >
             Dapp University
           </a>
+          <span class="navbar-text">
+            {this.state.account}
+          </span>
         </nav>
         <div className="container-fluid mt-5">
           <div className="row">
